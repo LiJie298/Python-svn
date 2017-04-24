@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import sys
 reload(sys)
@@ -5,18 +6,20 @@ sys.setdefaultencoding( "utf-8" )
 import svn.local as local
 import datetime
 
-deployRevision = '0.5.0.5'
+deployRevision = '0.5.0.6'
 basePath = 'E:/heren/deployment/deploy-sourcecode/tags'
 svnSavePath = 'E:/heren/deployment/svn'
+pathPam = 7
+jarPam = 8
 sourcePathList = []
-
+sourceJarPathList = []
 
 def getFileResource(basePath, thisVersion):
     if os.path.isdir(basePath):
         tempList = os.listdir(basePath)
         for i in tempList:
             temp = basePath + "/" + i
-            if temp.count("/") < 7:
+            if temp.count("/") < 8:
                 getFileResource(temp, thisVersion)
             else:
                 if temp.count(thisVersion) > 0:
@@ -54,6 +57,7 @@ def editSvnTxt(svnSavePath, ProjectName, svnInfo):
         else:
             f = open(testfile, "a")
         f.write(str(svnInfo).encode("utf-8"))
+        print testfile +"创建成功"
         f.close()
 
 
@@ -74,7 +78,9 @@ try:
     svnSavePath = svnSavePath + "/" + deployRevision
     print "----------------保存地址为----------------\n" + svnSavePath
     getFileResource(basePath, deployRevision)
-    getSvnVersion(sourcePathList, '39379')
+    for item in sourcePathList :
+        print item
+    # getSvnVersion(sourcePathList, '39379')
     print "成功！！！"
 except Exception, e:
     print "创建失败！！；原因是\n" + e.message;

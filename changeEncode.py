@@ -6,6 +6,18 @@ savePath = "E:\heren\dbChanaged"
 sourcePath = "E:\heren\db"
 
 
+class errorItem():
+    filename = ""
+    errorMessage = ""
+
+    def __init__(self, filename, errorMessage):
+        self.errorMessage = errorMessage
+        self.filename = filename
+
+
+errorList = []
+
+
 def ChangeEncode(file, fromEncode, toEncode):
     try:
         sourceFile = os.path.join(sourcePath, file)
@@ -19,7 +31,10 @@ def ChangeEncode(file, fromEncode, toEncode):
         f.write(s)
         return 0
     except Exception, e:
-        print "发生错误：" + str(e)
+        print "\t错误消息：" + file + "-- " + str(e)
+        a={}
+        a = errorItem(filename=file,errorMessage=str(e))
+        errorList.append(a)
         return -1
     finally:
         f.close()
@@ -29,9 +44,9 @@ def Do(dirname, fromEncode, toEncode):
     for root, dirs, files in os.walk(dirname):
         for _file in files:
             if (ChangeEncode(_file, fromEncode, toEncode) != 0):
-                print "[转换失败:]" + _file
+                print "[转换失败]:" + _file
             else:
-                print "[成功：]" + _file
+                print "[成功]：" + _file
 
 
 def CheckParam(dirname, fromEncode, toEncode):
@@ -55,3 +70,6 @@ if __name__ == "__main__":
         print error[ret]
     else:
         Do(dirname, fromEncode, toEncode)
+        print len(errorList)
+        for i in errorList:
+            print i
