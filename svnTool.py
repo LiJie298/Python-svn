@@ -13,22 +13,37 @@ pathPam = 7
 jarPam = 8
 sourcePathList = []
 sourceJarPathList = []
+isPath = ''
 
-def getFileResource(basePath, thisVersion):
+def getFileResource(basePath, thisVersion,isPath):
     if os.path.isdir(basePath):
         tempList = os.listdir(basePath)
         for i in tempList:
             temp = basePath + "/" + i
-            if temp.count("/") < 8:
-                getFileResource(temp, thisVersion)
+            if isPath != '' :
+                if(temp.count("heren-core")>0):
+                    if temp.count("/") < 7:
+                        getFileResource(temp, thisVersion,isPath)
+                    else:
+                        if temp.count(thisVersion) > 0:
+                            sourcePathList.append(temp)
+                else :
+                    if temp.count("/") < 8:
+                     getFileResource(temp, thisVersion,isPath)
+                    else:
+                        if temp.count(thisVersion) > 0:
+                            sourcePathList.append(temp)
             else:
-                if temp.count(thisVersion) > 0:
-                    sourcePathList.append(temp)
+                if temp.count("/") < 7:
+                    getFileResource(temp, thisVersion,isPath)
+                else:
+                    if temp.count(thisVersion) > 0:
+                        sourcePathList.append(temp)
     else:
         print "目录不正确,请核实你的路径+\n" + basePath
 
 
-def getSvnVersion(sourcePathList, preVersion):
+def getSvnVersion(sourcePathList, preVersion,isPath):
     sourceSvnDiffInfo = []
     for source in sourcePathList:
         if os.path.isdir(source):
@@ -67,20 +82,21 @@ def getProjectName(source):
         return
     else:
         tem = str(source).rsplit("/")
-        tem1 = tem[len(tem) - 1] + tem[len(tem) - 2]
-        baktem = tem1.split(deployRevision)
-        baktem.sort()
-        print baktem[1]
-    return baktem[1]
+        if str(source).count("heren-core")>0:
+            baktem = tem[len(tem)-2]
+        else:
+            baktem =tem[len(tem)-1]
+    return baktem
 
 
 try:
     svnSavePath = svnSavePath + "/" + deployRevision
     print "----------------保存地址为----------------\n" + svnSavePath
-    getFileResource(basePath, deployRevision)
+    isPath = 'patch1'
+    getFileResource(basePath, deployRevision,isPath)
     for item in sourcePathList :
         print item
-    # getSvnVersion(sourcePathList, '39379')
+    getSvnVersion(sourcePathList, '39736',isPath)
     print "成功！！！"
 except Exception, e:
     print "创建失败！！；原因是\n" + e.message;
